@@ -30,8 +30,9 @@ class Game {
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
-    top.addEventListener('click', this.handleClick);
-
+    this.handleGameClick = this.handleClick.bind(this);
+    top.addEventListener('click', this.handleGameClick);
+    
     for (let x = 0; x < this.WIDTH; x++) {
       const headCell = document.createElement('td');
       headCell.setAttribute('id', x);
@@ -87,14 +88,14 @@ class Game {
     
     
     // get next spot in column (if none, ignore click)
-    const y = findSpotForCol(x);
+    const y = this.findSpotForCol(x);
     if (y === null) {
       return;
     }
 
     // place piece in board and add to HTML table
-    board[y][x] = this.currPlayer;
-    placeInTable(y, x);
+    this.board[y][x] = this.currPlayer;
+    this.placeInTable(y, x);
     
     // check for win
     if (this.checkForWin()) {
@@ -115,14 +116,14 @@ class Game {
       // Check four cells to see if they're all color of current player
       //  - cells: list of four (y, x) cells
       //  - returns true if all are legal coordinates & all match currPlayer
-
+      
       return cells.every(
         ([y, x]) =>
           y >= 0 &&
           y < this.HEIGHT &&
           x >= 0 &&
           x < this.WIDTH &&
-          board[y][x] === this.currPlayer
+          this.board[y][x] === this.currPlayer
       );
     }
 
