@@ -27,12 +27,12 @@ class Game {
   /** makeHtmlBoard: make HTML table and row of column tops. */
   makeHtmlBoard() {
     const board = document.getElementById('board');
-    const handleGameClick = this.handleClick.bind(this);
+    this.handleGameClick = this.handleClick.bind(this);
 
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
-    top.addEventListener('click', handleGameClick);
+    top.addEventListener('click', this.handleGameClick);
     
     for (let x = 0; x < this.WIDTH; x++) {
       const headCell = document.createElement('td');
@@ -77,8 +77,10 @@ class Game {
   spot.append(piece);
   }
 
-  /** endGame: announce game end */
+  /** endGame: announce game end and remove event listener */
   endGame(msg) {
+  const top = document.getElementById('column-top');
+  top.removeEventListener('click', this.handleGameClick);
   alert(msg);
   }
 
@@ -146,6 +148,7 @@ class Game {
 
 }
 
+// Start button that starts/restarts the game 
 const button = document.querySelector('button');
 button.addEventListener('click', evt => {
   evt.preventDefault();
@@ -155,3 +158,4 @@ button.addEventListener('click', evt => {
   }
   new Game(6, 7);
 })
+
