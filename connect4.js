@@ -14,6 +14,7 @@ class Game {
     this.makeHtmlBoard();
     this.makeBoard();
   }
+
     /** makeBoard: create in-JS board structure:
     *   board = array of rows, each row is array of cells (board[y][x])
     */
@@ -26,12 +27,12 @@ class Game {
   /** makeHtmlBoard: make HTML table and row of column tops. */
   makeHtmlBoard() {
     const board = document.getElementById('board');
+    const handleGameClick = this.handleClick.bind(this);
 
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
-    this.handleGameClick = this.handleClick.bind(this);
-    top.addEventListener('click', this.handleGameClick);
+    top.addEventListener('click', handleGameClick);
     
     for (let x = 0; x < this.WIDTH; x++) {
       const headCell = document.createElement('td');
@@ -85,8 +86,7 @@ class Game {
   handleClick(evt) {
     // get x from ID of clicked cell
     const x = evt.target.id;
-    
-    
+
     // get next spot in column (if none, ignore click)
     const y = this.findSpotForCol(x);
     if (y === null) {
@@ -112,11 +112,11 @@ class Game {
 }
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
   checkForWin() {
+    const win = _win.bind(this)
     function _win(cells) {
       // Check four cells to see if they're all color of current player
       //  - cells: list of four (y, x) cells
       //  - returns true if all are legal coordinates & all match currPlayer
-      
       return cells.every(
         ([y, x]) =>
           y >= 0 &&
@@ -137,7 +137,7 @@ class Game {
         const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
         // find winner (only checking each win-possibility as needed)
-        if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+        if (win(horiz) || win(vert) || win(diagDR) || win(diagDL)) {
           return true;
         }
       }
@@ -146,5 +146,12 @@ class Game {
 
 }
 
-new Game(6, 7)
-
+const button = document.querySelector('button');
+button.addEventListener('click', evt => {
+  evt.preventDefault();
+  const board = document.getElementById('board');
+  if (board.children){
+    board.innerHTML = '';
+  }
+  new Game(6, 7);
+})
