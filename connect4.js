@@ -6,11 +6,13 @@
  */
 
 class Game {
-  constructor(HEIGHT, WIDTH){
+  constructor(HEIGHT, WIDTH, p1, p2){
     this.WIDTH = WIDTH;
     this.HEIGHT = HEIGHT;
     this.board = [];  //array of row arrays, each row is array of cells (board[y][x])
-    this.currPlayer = 1; // active player: 1 or 2
+    this.p1 = p1;
+    this.p2 = p2;
+    this.currPlayer = this.p1; // active player: 1 or 2
     this.makeHtmlBoard();
     this.makeBoard();
   }
@@ -70,7 +72,8 @@ class Game {
   placeInTable(y, x) {
   const piece = document.createElement('div');
   piece.classList.add('piece');
-  piece.classList.add(`p${this.currPlayer}`);
+  // piece.classList.add(`${this.currPlayer.color}`);
+  piece.style.backgroundColor = this.currPlayer.color;
   piece.style.top = -50 * (y + 2);
 
   const spot = document.getElementById(`${y}-${x}`);
@@ -101,7 +104,7 @@ class Game {
     
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`${this.currPlayer.color} player wins!`);
     }
     
     // check for tie
@@ -110,7 +113,7 @@ class Game {
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
 }
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
   checkForWin() {
@@ -148,14 +151,40 @@ class Game {
 
 }
 
+class Player {
+  constructor(color){
+    this.color = color;
+  }
+}
+
 // Start button that starts/restarts the game 
 const button = document.querySelector('button');
 button.addEventListener('click', evt => {
   evt.preventDefault();
+
+  //Create player 1
+  const p1Color = document.getElementById('player1');
+  const p1 = new Player(p1Color.value);
+  p1.id = 'p1';
+  //Create player 2
+  const p2Color = document.getElementById('player2');
+  const p2 = new Player(p2Color.value);
+  p2.id = 'p2';
+
+  //Clear text fields 
+  p1Color.value = '';
+  p2Color.value = '';
+
+  //Create game object 
   const board = document.getElementById('board');
   if (board.children){
     board.innerHTML = '';
   }
-  new Game(6, 7);
+  new Game(6, 7, p1, p2);
 })
 
+
+
+//This assignment took me longer than projected, so I didn't go ahead with further study 
+//I styled my other Connect 4 game quite a bit, so I feel good on that for now. 
+//Would love to revisit this when I'm more confident 
